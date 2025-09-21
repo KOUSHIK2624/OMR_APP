@@ -14,12 +14,7 @@ from datetime import datetime
 import warnings
 #from streamlit_lottie import st_lottie
 import requests
-# Fix matplotlib for server environments
-import matplotlib
-matplotlib.use('Agg')  # Use non-interactive backend
-import matplotlib.pyplot as plt
-warnings.filterwarnings('ignore')
-
+ 
 # Set page configuration
 st.set_page_config(
     page_title="Automated OMR Evaluation System",
@@ -520,13 +515,13 @@ with tab2:
             st.metric("Best Score", f"{max(total_scores) if total_scores else 0}/100")
         
         # Display score distribution
-        st.write("**Score Distribution**")
-        fig, ax = plt.subplots(figsize=(10, 4))
-        ax.hist(total_scores, bins=10, color='skyblue', edgecolor='black')
-        ax.set_xlabel('Score')
-        ax.set_ylabel('Frequency')
-        ax.set_title('Distribution of Scores')
-        st.pyplot(fig)
+       # st.write("**Score Distribution**")
+       # fig, ax = plt.subplots(figsize=(10, 4))
+       # ax.hist(total_scores, bins=10, color='skyblue', edgecolor='black')
+       # ax.set_xlabel('Score')
+       # ax.set_ylabel('Frequency')
+       # ax.set_title('Distribution of Scores')
+       # st.pyplot(fig)
         
     else:
         st.info("No evaluation results yet. Process some OMR sheets to see data here.")
