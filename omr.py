@@ -14,7 +14,10 @@ from datetime import datetime
 import warnings
 #from streamlit_lottie import st_lottie
 import requests
-
+# Fix matplotlib for server environments
+import matplotlib
+matplotlib.use('Agg')  # Use non-interactive backend
+import matplotlib.pyplot as plt
 warnings.filterwarnings('ignore')
 
 # Set page configuration
