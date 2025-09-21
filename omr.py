@@ -12,7 +12,7 @@ import tempfile
 import os
 from datetime import datetime
 import warnings
-from streamlit_lottie import st_lottie
+#from streamlit_lottie import st_lottie
 import requests
 
 warnings.filterwarnings('ignore')
@@ -135,8 +135,8 @@ def load_lottieurl(url):
         return None
     return r.json()
 
-lottie_animation = load_lottieurl("https://assets10.lottiefiles.com/packages/lf20_touohxv0.json")
-st_lottie(lottie_animation, height=300, key="animation")
+#lottie_animation = load_lottieurl("https://assets10.lottiefiles.com/packages/lf20_touohxv0.json")
+#st_lottie(lottie_animation, height=300, key="animation")
 
 # Initialize database
 def init_db():
