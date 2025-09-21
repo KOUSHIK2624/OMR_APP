@@ -140,6 +140,7 @@ st_lottie(lottie_animation, height=300, key="animation")
 
 # Initialize database
 def init_db():
+    # Initialize database 
     conn = sqlite3.connect('omr_results.db')
     c = conn.cursor()
     c.execute('''CREATE TABLE IF NOT EXISTS results
@@ -163,6 +164,25 @@ def save_to_db(student_id, sheet_version, subject_scores, total_score, extracted
               (student_id, datetime.now(), sheet_version, json.dumps(subject_scores), total_score, json.dumps(extracted_answers), json.dumps(correct_answers), image_path))
     conn.commit()
     conn.close()
+    # -------------------------------
+# Define global configuration
+# -------------------------------
+
+# Answer keys for different sheet versions
+answer_keys = {
+    "version1": ["A", "B", "C", "D"] * 25,   # 100 questions
+    "version2": ["B", "C", "D", "A"] * 25,
+    "version3": ["C", "D", "A", "B"] * 25,
+    "version4": ["D", "A", "B", "C"] * 25,
+}
+
+# Subjects (used for subject-wise scoring)
+subjects = ["Math", "Physics", "Chemistry", "Biology", "English"]
+
+# Default values (can be overridden in sidebar later)
+sheet_version = "version1"
+student_id = "S001"
+
 
 # Get all results from database
 def get_all_results():
@@ -198,86 +218,37 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 # Features overview
-st.markdown('<div class="sub-header">System Features</div>', unsafe_allow_html=True)
-st.markdown("""
-<div class="feature-grid">
-    <div class="feature-item">
-        <h4>📱 Mobile Capture Support</h4>
-        <p>Process images captured with mobile phone cameras</p>
-    </div>
-    <div class="feature-item">
-        <h4>📊 Multi-Version Support</h4>
-        <p>Handle 2-4 different sheet versions with unique answer keys</p>
-    </div>
-    <div class="feature-item">
-        <h4>📈 Subject-wise Scoring</h4>
-        <p>Calculate scores for 5 subjects (0-20 each) and total score (0-100)</p>
-    </div>
-    <div class="feature-item">
-        <h4>🔍 Bubble Detection</h4>
-        <p>Advanced computer vision techniques for accurate bubble detection</p>
-    </div>
-    <div class="feature-item">
-        <h4>🌐 Web Application</h4>
-        <p>Easy-to-use web interface for evaluators to manage results</p>
-    </div>
-    <div class="feature-item">
-        <h4>💾 Export Results</h4>
-        <p>Download results in JSON and CSV formats for further analysis</p>
-    </div>
-</div>
-""", unsafe_allow_html=True)
+ 
 
-# Sidebar for configuration
+# 
 with st.sidebar:
     st.image("https://cdn-icons-png.flaticon.com/512/2910/2910765.png", width=150)
-    st.title("Configuration")
+st.title("Configuration")
     
-    st.markdown("---")
-    st.subheader("Student Information")
-    student_id = st.text_input("Student ID", value=st.session_state.student_id)
-    st.session_state.student_id = student_id
     
-    st.markdown("---")
-    st.subheader("Answer Key Setup")
     
-    # Answer key configuration
-    sheet_version = st.selectbox("OMR Sheet Version", ["Version A", "Version B", "Version C", "Version D"])
+st.markdown("---")
+st.subheader("Processing Options")
+enable_preprocessing = st.checkbox("Enable Image Preprocessing", value=True)
+sensitivity = st.slider("Bubble Detection Sensitivity", 0.1, 0.9, 0.5)
     
-    # Sample answer keys for different versions
-    answer_keys = {
-        "Version A": ["A", "B", "C", "D", "A"] * 20,
-        "Version B": ["B", "C", "D", "A", "B"] * 20,
-        "Version C": ["C", "D", "A", "B", "C"] * 20,
-        "Version D": ["D", "A", "B", "C", "D"] * 20
-    }
-    
-    # Show answer key
-    with st.expander("View Answer Key"):
-        key_df = pd.DataFrame({
-            'Question': range(1, 101),
-            'Answer': answer_keys[sheet_version]
-        })
-        st.dataframe(key_df, height=300)
-    
-    # Subjects configuration
-    st.subheader("Subjects Configuration")
-    subjects = []
-    for i in range(5):
-        subject = st.text_input(f"Subject {i+1}", value=f"Subject {i+1}")
-        subjects.append(subject)
-    
-    st.markdown("---")
-    st.subheader("Processing Options")
-    enable_preprocessing = st.checkbox("Enable Image Preprocessing", value=True)
-    sensitivity = st.slider("Bubble Detection Sensitivity", 0.1, 0.9, 0.5)
-    
-    st.markdown("---")
-    if st.button("Process OMR Sheet", type="primary", use_container_width=True):
+st.markdown("---")
+if st.button("Process OMR Sheet", type="primary", use_container_width=True):
         st.session_state.processed = True
-    if st.button("Reset", use_container_width=True):
+if st.button("Reset", use_container_width=True):
         st.session_state.processed = False
         st.session_state.results = None
+
+# Collapsible "System Features" section
+with st.expander("📋 System Features"):
+    st.markdown("""
+    - 📱 **Mobile Capture Support:** Process images captured with mobile phone cameras
+    - 📊 **Multi-Version Support:** Handle 2-4 different sheet versions with unique answer keys
+    - 📈 **Subject-wise Scoring:** Calculate scores for 5 subjects (0-20 each) and total score (0-100)
+    - 🔍 **Bubble Detection:** Advanced computer vision techniques for accurate bubble detection
+    - 🌐 **Web Application:** Easy-to-use web interface for evaluators to manage results
+    - 💾 **Export Results:** Download results in JSON and CSV formats for further analysis
+    """)
 
 # Main content area
 tab1, tab2, tab3 = st.tabs(["OMR Evaluation", "Results Dashboard", "Database Export"])
@@ -359,15 +330,15 @@ with tab1:
                         options.remove(answer_keys[sheet_version][i])
                         extracted_answers.append(np.random.choice(options))
                 
-                # Store results in session state
-                st.session_state.results = {
-                    "subject_scores": subject_scores,
-                    "total_score": total_score,
-                    "extracted_answers": extracted_answers,
-                    "correct_answers": answer_keys[sheet_version],
-                    "subjects": subjects,
-                    "sheet_version": sheet_version
-                }
+                        st.session_state.results = {
+                         "subject_scores": subject_scores.tolist(),  # convert ndarray → list
+                         "total_score": int(total_score),            # convert np.int64 → int
+                         "extracted_answers": extracted_answers,
+                         "correct_answers": answer_keys[sheet_version],
+                         "subjects": subjects,
+                         "sheet_version": sheet_version
+  }
+
                 
                 # Save to database
                 with tempfile.NamedTemporaryFile(delete=False, suffix='.jpg') as tmp:
@@ -376,7 +347,7 @@ with tab1:
                         student_id, 
                         sheet_version, 
                         subject_scores.tolist(), 
-                        total_score, 
+                        int(total_score),   # ✅ FIX: cast to Python int
                         extracted_answers, 
                         answer_keys[sheet_version], 
                         tmp.name
@@ -522,8 +493,19 @@ with tab2:
         
         st.subheader("Performance Statistics")
         
-        # Calculate average scores
-        total_scores = [r[5] for r in results]
+        # ✅ FIX: Handle binary data conversion properly
+        total_scores = []
+        for r in results:
+            if r[5] is not None:
+                if isinstance(r[5], bytes):
+                    # Convert binary data to integer
+                    try:
+                        total_scores.append(int.from_bytes(r[5], byteorder='little'))
+                    except:
+                        total_scores.append(0)
+                else:
+                    total_scores.append(int(r[5]))
+        
         avg_score = sum(total_scores) / len(total_scores) if total_scores else 0
         
         col1, col2, col3 = st.columns(3)
@@ -557,7 +539,13 @@ with tab3:
         data = []
         for result in results:
             subject_scores = json.loads(result[4])
-            data.append({
+            # Handle binary data conversion for total_score
+            if isinstance(result[5], bytes):
+                total_score = int.from_bytes(result[5], byteorder='little')
+            else:
+                total_score = result[5]
+                
+                data.append({
                 "Student ID": result[1],
                 "Timestamp": result[2],
                 "Sheet Version": result[3],
@@ -566,46 +554,5 @@ with tab3:
                 "Subject 3 Score": subject_scores[2] if len(subject_scores) > 2 else 0,
                 "Subject 4 Score": subject_scores[3] if len(subject_scores) > 3 else 0,
                 "Subject 5 Score": subject_scores[4] if len(subject_scores) > 4 else 0,
-                "Total Score": result[5]
+                "Total Score": total_score
             })
-        
-        df = pd.DataFrame(data)
-        
-        # Display data
-        st.dataframe(df, use_container_width=True)
-        
-        # Export options
-        st.subheader("Export All Results")
-        
-        col1, col2 = st.columns(2)
-        
-        with col1:
-            # CSV export
-            csv = df.to_csv(index=False)
-            st.download_button(
-                label="Download CSV (All Results)",
-                data=csv,
-                file_name="all_omr_results.csv",
-                mime="text/csv"
-            )
-        
-        with col2:
-            # JSON export
-            json_data = df.to_json(orient='records', indent=2)
-            st.download_button(
-                label="Download JSON (All Results)",
-                data=json_data,
-                file_name="all_omr_results.json",
-                mime="application/json"
-            )
-    else:
-        st.info("No evaluation results yet. Process some OMR sheets to export data.")
-
-# Footer
-st.markdown("---")
-st.markdown("""
-<div class="footer">
-    <p>Automated OMR Evaluation & Scoring System | Developed for Innomatics Research Labs Code4Edtech Challenge</p>
-    <p>© 2025 Innomatics Research Labs. All rights reserved.</p>
-</div>
-""", unsafe_allow_html=True)
