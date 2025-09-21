@@ -554,7 +554,7 @@ with tab3:
                 "Subject 5 Score": subject_scores[4] if len(subject_scores) > 4 else 0,
                 "Total Score": total_score
             })
-             df = pd.DataFrame(data)
+df = pd.DataFrame(data)
 
 # Display data
 st.dataframe(df, use_container_width=True)
