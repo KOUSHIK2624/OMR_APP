@@ -1,9 +1,0 @@
-streamlit
-opencv-python-headless
-numpy
-pandas
-Pillow
-scipy
-matplotlib
-requests
-streamlit-lottie
