@@ -5,7 +5,7 @@ import pandas as pd
 from PIL import Image, ImageFilter, ImageDraw
 import io
 import json
-import matplotlib.pyplot as plt
+#import matplotlib.pyplot as plt
 from scipy import ndimage
 import sqlite3
 import tempfile
