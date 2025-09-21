@@ -583,5 +583,5 @@ with col2:
         file_name="all_omr_results.json",
         mime="application/json"
     )
-else:
-     st.info("NO evaluation results yet. Process some OMR sheets to export data.")
+    else:
+       st.info("NO evaluation results yet. Process some OMR sheets to export data.")
