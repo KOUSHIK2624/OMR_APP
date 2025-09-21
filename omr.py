@@ -554,3 +554,34 @@ with tab3:
                 "Subject 5 Score": subject_scores[4] if len(subject_scores) > 4 else 0,
                 "Total Score": total_score
             })
+             df = pd.DataFrame(data)
+
+# Display data
+st.dataframe(df, use_container_width=True)
+
+# Export options
+st.subheader("Export All Results")
+
+col1, col2 = st.columns(2)
+
+with col1:
+    # CSV export
+    csv = df.to_csv(index=False)
+    st.download_button(
+        label="Download CSV (All Results)",
+        data=csv,
+        file_name="all_omr_results.csv",
+        mime="text/csv"
+    )
+
+with col2:
+    # JSON export
+    json_data = df.to_json(orient='records', indent=2)
+    st.download_button(
+        label="Download JSON (All Results)",
+        data=json_data,
+        file_name="all_omr_results.json",
+        mime="application/json"
+    )
+else:
+     st.info("NO evaluation results yet. Process some OMR sheets to export data.")
