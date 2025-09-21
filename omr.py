@@ -5,7 +5,7 @@ import pandas as pd
 from PIL import Image, ImageFilter, ImageDraw
 import io
 import json
-import matplotlib.pyplot as plt
+#import matplotlib.pyplot as plt
 #from scipy import ndimage
 import sqlite3
 import tempfile
@@ -387,23 +387,23 @@ with tab1:
                     st.markdown('</div>', unsafe_allow_html=True)
             
             # Score visualization
-            st.subheader("Performance Visualization")
-            fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(12, 5))
+           # st.subheader("Performance Visualization")
+            #fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(12, 5))
             
             # Subject scores bar chart
-            ax1.bar(st.session_state.results['subjects'], st.session_state.results['subject_scores'], color=['#FF5733', '#FFC300', '#FF8C00', '#FFB74D', '#FFD54F'])
-            ax1.set_ylabel('Score')
-            ax1.set_title('Subject-wise Scores')
-            ax1.set_ylim(0, 20)
-            ax1.tick_params(axis='x', rotation=45)
+           # ax1.bar(st.session_state.results['subjects'], st.session_state.results['subject_scores'], color=['#FF5733', '#FFC300', '#FF8C00', '#FFB74D', '#FFD54F'])
+           # ax1.set_ylabel('Score')
+           # ax1.set_title('Subject-wise Scores')
+           # ax1.set_ylim(0, 20)
+           # ax1.tick_params(axis='x', rotation=45)
             
             # Overall score pie chart
-            correct = st.session_state.results['total_score']
-            incorrect = 100 - correct
-            ax2.pie([correct, incorrect], labels=['Correct', 'Incorrect'], autopct='%1.1f%%', colors=['#4CAF50', '#FF5252'])
-            ax2.set_title('Overall Performance')
+           # correct = st.session_state.results['total_score']
+            #incorrect = 100 - correct
+           # ax2.pie([correct, incorrect], labels=['Correct', 'Incorrect'], autopct='%1.1f%%', colors=['#4CAF50', '#FF5252'])
+           # ax2.set_title('Overall Performance')
             
-            st.pyplot(fig)
+           # st.pyplot(fig)
             
             # Answer comparison
             st.subheader("Answer Comparison")
